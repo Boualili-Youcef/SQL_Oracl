@@ -100,7 +100,7 @@ Table created.
 Table created.
 
 -- Remarque : 
--- J'ai ajouté les contraintes "NOT NULL" pour garantir l'intégrité des données. 
+-- J'ai ajouté les contraintes "NOT NULL" pour garantir l'intégrité des données. Apres ca depend de ce qu'on veut faire des données.
 -- Les clés primaires (PRIMARY KEY) et clés étrangères (FOREIGN KEY) ne peuvent pas contenir de valeurs NULL. 
 -- Cela renforce la cohérence et l'intégrité référentielle dans la base de données. 
  */

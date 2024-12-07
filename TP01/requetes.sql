@@ -52,7 +52,7 @@ HYP43      Dealer Price
 Calais                         62100      EMP8765
 */
 
-
+-- _________________________________________________________________________________________________
 
 -- M RICHARD Philipe est remplacé par M VASSEUR Jacque pour gérer le rayon
 -- Poissonerie de l’hypermarché Marrefour coquelle.
@@ -85,6 +85,7 @@ Poissonnerie traiteur, plateau de fruits de mer.
         950000 HYP12      EMP1505
 */
 
+-- _________________________________________________________________________________________________
 
 -- 1) Descriptifs des rayons dont les chiffres d'affaires sont supérieurs à 1 000 000
 SELECT DESCRIPTIF
@@ -95,6 +96,8 @@ DESCRIPTIF
 --------------------------------------------------------------------------------
 V├¬tements
 */
+
+-- _________________________________________________________________________________________________
 
 -- 2) Les noms des hypermarchés se trouvant à Calais.
 SELECT NOM
@@ -107,6 +110,8 @@ NOM
 DO-SPORT
 Dealer Price
 */
+
+-- _________________________________________________________________________________________________
 
 --3) Les noms des hypermarchés se trouvant dans le Pas de Calais (code postal commençant par 62).
 SELECT NOM
@@ -132,6 +137,8 @@ NOM                            PRENOM
 VASSEUR                        Jacques
 */
 
+-- _________________________________________________________________________________________________
+
 -- 5) Les noms et prénoms des responsables de rayons de l'hypermarché 'Marrefour coquelles'
 -- et dont le chiffre d'affaire est inférieur à 500000.
 SELECT EMPLOYE.NOM, EMPLOYE.PRENOM
@@ -142,6 +149,8 @@ WHERE HYPERMARCHE.NOM = 'Marrefour Coquelles'
   AND RAYON.CHIFFREAFFAIRE < 500000;
 
 /* no rows selected */
+
+-- _________________________________________________________________________________________________
 
 -- 6) Le nom du directeur de l’hypermarché se trouvant à Calais et dans lequel existe un rayon
 -- dont le chiffre d'affaire est inférieur à 500000 et dont le responsable est Max Stevenson
@@ -175,6 +184,9 @@ NOM_DIRECTEUR
 ------------------------------
 Hugo
 */
+
+
+-- _________________________________________________________________________________________________
 
 -- 7) Le nom de l'hypermarché contenant un rayon dont le chiffre d'affaire est le plus haut (le
 -- plus haut de tous les rayons pas seulement de ceux de l'hypermarché en question). Pour
@@ -219,6 +231,7 @@ NOM
 DO-SPORT
 */
 
+-- _________________________________________________________________________________________________
 
 -- 8) Le nom du responsable de rayon de l'hypermarché Marrefour Coquelles dont le chiffre
 -- d'affaire est le plus haut (le plus haut des rayons de l'hypermarché en question
@@ -269,6 +282,7 @@ NOM
 DURAND
 */
 
+-- _________________________________________________________________________________________________
 
 -- 9) Le nom de l'hypermarché contenant un rayon dont le chiffre d'affaire n'est pas le plus
 -- phaut (le plus haut de tous les rayons pas seulement de ceux de l'hypermarché en
@@ -276,43 +290,111 @@ DURAND
 
 -- Version 01:
 
-SELECT HYPERMARCHE.NOM
-FROM HYPERMARCHE
-JOIN RAYON ON HYPERMARCHE.NUMERO = RAYON.NUMEROHYPER
-WHERE RAYON.CHIFFREAFFAIRE != (SELECT MAX(CHIFFREAFFAIRE) FROM RAYON);
+SELECT DISTINCT H.NOM -- J'ai utiliser DISTINCT pour éviter la redondance 
+FROM HYPERMARCHE H
+JOIN RAYON R ON H.NUMERO = R.NUMEROHYPER
+WHERE R.CHIFFREAFFAIRE < (
+    SELECT MAX(CHIFFREAFFAIRE)
+    FROM RAYON
+);
+
+/*
+NOM
+------------------------------
+Marrefour
+DO-SPORT
+Dealer Price
+*/
 
 -- Version 02:
 
-SELECT HYPERMARCHE.NOM
-FROM HYPERMARCHE
-JOIN RAYON ON HYPERMARCHE.NUMERO = RAYON.NUMEROHYPER
-GROUP BY HYPERMARCHE.NOM
-HAVING MAX(RAYON.CHIFFREAFFAIRE) != (SELECT MAX(CHIFFREAFFAIRE) FROM RAYON);
+SELECT H.NOM
+FROM HYPERMARCHE H
+WHERE H.NUMERO IN (       -- J'ai utiliser un IN ici 
+    SELECT R.NUMEROHYPER
+    FROM RAYON R
+    WHERE R.CHIFFREAFFAIRE < (
+        SELECT MAX(CHIFFREAFFAIRE)
+        FROM RAYON
+    )
+);
+
+/*
+NOM
+------------------------------
+Marrefour
+DO-SPORT
+Dealer Price
+*/
+
+-- REMARQUE: 
+-- Nous avons bien "DO-SPORT" dans les résultats, bien que ce magasin
+-- possède un rayon avec le chiffre d'affaires maximal. Ca s'explique
+-- par le fait qu'un autre rayon de "DO-SPORT" a un chiffre d'affaires 
+-- inférieur à la valeur maximale. Le critère de sélection est que 
+-- au moins un rayon de l'hypermarché a un chiffre d'affaires inférieur 
+-- au chiffre d'affaires maximal parmi tous les rayons.
+
+-- _________________________________________________________________________________________________
 
 
-SELECT HYPERMARCHE.NOM, SUM(RAYON.CHIFFREAFFAIRE) AS CA_TOTAL
-FROM HYPERMARCHE
-JOIN RAYON ON HYPERMARCHE.NUMERO = RAYON.NUMEROHYPER
-GROUP BY HYPERMARCHE.NOM;
+--10) Le chiffre d'affaire total (somme des chiffres d'affaires de tous les rayons) de tous les hypermarchés.
+SELECT SUM(RAYON.CHIFFREAFFAIRE) AS CA_TOTAL
+FROM RAYON;
+
+/*
+  CA_TOTAL
+----------
+  53700000
+*/
+
+-- _________________________________________________________________________________________________
+
+-- 11) Le chiffre d'affaire total (somme des chiffres d'affaires de tous les rayons) de
+-- l'hypermarché géré par 'dupont' 'jean' et dont un des rayons est géré par un employé qui
+-- s'appelle 'durand' 'christophe'.
 
 SELECT SUM(RAYON.CHIFFREAFFAIRE) AS CA_TOTAL
 FROM HYPERMARCHE
-JOIN RAYON ON HYPERMARCHE.NUMERO = RAYON.NUMEROHYPER
 JOIN EMPLOYE ON HYPERMARCHE.NUMERODIRECTEUR = EMPLOYE.NUMERO
-WHERE EMPLOYE.NOM = 'Dupont' AND EMPLOYE.PRENOM = 'Jean'
+JOIN RAYON ON RAYON.NUMEROHYPER = HYPERMARCHE.NUMERO
+WHERE EMPLOYE.NOM = 'DUPONT' 
+  AND EMPLOYE.PRENOM = 'Jean'
   AND EXISTS (
-    SELECT 1
-    FROM RAYON R
-    JOIN EMPLOYE E ON R.NUMERORESPONSABLE = E.NUMERO
-    WHERE R.NUMEROHYPER = HYPERMARCHE.NUMERO
-      AND E.NOM = 'Durand' AND E.PRENOM = 'Christophe'
+      SELECT 1
+      FROM RAYON R
+      JOIN EMPLOYE E ON R.NUMERORESPONSABLE = E.NUMERO
+      WHERE R.NUMEROHYPER = HYPERMARCHE.NUMERO
+        AND E.NOM = 'DURAND' 
+        AND E.PRENOM = 'Christophe'
   );
 
+/*
+  CA_TOTAL
+----------
+   1950000
+*/
+
+--Remarque :
+-- Dans cette requête, j'ai utilisé la clause EXISTS pour vérifier s'il existe un
+-- rayon géré par un employé nommé 'Durand' Christophe, dans un hypermarché où 'Dupont' Jean est directeur.
+
+-- _________________________________________________________________________________________________
+
+-- 12) Afficher les couples (nom d'un hypermarché, chiffre d'affaire total) en ne gardant que
+-- les hypermarchés dont la moyenne des chiffres d'affaires des rayons leur appartenant est
+-- supérieure à 1500000 euros (utilisation de group by).
 
 SELECT HYPERMARCHE.NOM, SUM(RAYON.CHIFFREAFFAIRE) AS CA_TOTAL
 FROM HYPERMARCHE
 JOIN RAYON ON HYPERMARCHE.NUMERO = RAYON.NUMEROHYPER
 GROUP BY HYPERMARCHE.NOM
 HAVING AVG(RAYON.CHIFFREAFFAIRE) > 1500000;
+
+/*
+NOM                              CA_TOTAL
+------------------------------ ----------
+DO-SPORT                         50800000
+*/
 
 

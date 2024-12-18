@@ -1,3 +1,8 @@
+-- Nom: Boualil 
+-- Prénom: Youcef
+-- L3 Informatique
+-- TP2
+
 /* insertion dans la table Formation */
 INSERT INTO Formation VALUES (1,'L1 Info');
 INSERT INTO Formation VALUES (2,'L2 Info');

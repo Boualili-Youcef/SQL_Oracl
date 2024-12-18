@@ -17,6 +17,16 @@ WHERE
 ORDER BY
     NomE DESC;
 
+/*
+NOME                     S
+------------------------ -
+Yang                     M
+Martin                   F
+Gros                     F
+Dupond                   M
+Dubois                   M
+ */
+-- Génère le plan d'exécution pour la requête 
 EXPLAIN PLAN FOR
 SELECT
     NomE,
@@ -33,15 +43,6 @@ SELECT
 FROM
     TABLE (DBMS_XPLAN.DISPLAY);
 
-/*
-NOME                     S
------------------------- -
-Yang                     M
-Martin                   F
-Gros                     F
-Dupond                   M
-Dubois                   M
- */
 /*
 Explained.
 
@@ -71,7 +72,16 @@ Note
 - dynamic statistics used: dynamic sampling (level=2)
 
 18 rows selected.
+
  */
+/*
+-- Analyse de la sortie du plan d'exécution
+-- 2. SORT ORDER BY : Les résultats sont triés.
+-- 3. TABLE ACCESS FULL : Un accès complet à la table ETUDIANT.
+-- 4. Filtre : Le filtre "CODEF = 3".
+-- 5. Coût : Le coût total estimé de l'exécution est de 4.
+ */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- b) Répartition des étudiants selon le sexe
 SELECT
     Sexe,
@@ -87,21 +97,18 @@ S REPARTITION
 M           6
 F           5
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- c) Liste des étudiants absents (Nom, Matiere) à certaines matières (ils n'ont pas été notés)
 SELECT
     E.nomE AS Nom,
     M.nomM AS Matiere
 FROM
-    Etudiant E,
-    Matiere M
+    Etudiant E
+    CROSS JOIN Matiere M -- C'est pour obtenir toutes les combinaisons possibles d'étudiants et de matières.
+    LEFT JOIN Noter N ON E.numEtu = N.numEtu
+    AND M.numMat = N.numMat -- Utilisation de LEFT JOIN pour inclure toutes les combinaisons, même celles sans correspondance dans Noter.
 WHERE
-    (E.numEtu, M.numMat) NOT IN (
-        SELECT
-            numEtu,
-            numMat
-        FROM
-            Noter
-    );
+    N.numEtu IS NULL;
 
 /*
 NOM                      MATIERE
@@ -119,6 +126,7 @@ Romain                   Statistiques
 
 10 rows selected.
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- d) Liste des étudiants (Nom) qui ont tous une note dans les matières
 SELECT
     E.nomE AS Nom
@@ -150,6 +158,7 @@ Yang
 
 7 rows selected.
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- e) Liste des étudiants (Nom) qui n’ont aucune note dans les matières
 SELECT
     E.nomE AS Nom
@@ -168,6 +177,7 @@ NOM
 ------------------------
 Romain
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- f) Liste des étudiants (Nom) qui ont la plus basse note en Programmation
 SELECT
     E.nomE AS Nom
@@ -179,7 +189,7 @@ WHERE
     M.nomM = 'Programmation'
     AND N.note = (
         SELECT
-            MIN(N2.note)
+            MIN(N2.note) -- je sélectionne la note minimale
         FROM
             Noter N2
             JOIN Matiere M2 ON N2.numMat = M2.numMat
@@ -193,6 +203,7 @@ NOM
 Dupond
 Henri
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- g) Liste des étudiants (Nom, Moyenne générale) triée du moins bon au meilleur. On utilisera
 -- la fonction ROUND(Valeur,NbDecimales) pour arrondir la moyenne générale à 2
 -- décimales
@@ -200,7 +211,7 @@ Henri
 -- g) Liste des étudiants (Nom, Moyenne générale) triée du moins bon au meilleur
 SELECT
     E.nomE AS Nom,
-    ROUND(AVG(N.note), 2) AS Moyenne_Generale
+    ROUND(AVG(N.note), 2) AS Moyenne_Generale -- arrondie 
 FROM
     Etudiant E
     JOIN Noter N ON E.numEtu = N.numEtu
@@ -225,6 +236,7 @@ Martin                               13.8
 
 10 rows selected.
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- h) Liste des étudiants (Nom, Note) qui ont une note de programmation supérieure à toutes
 -- les notes (de toutes les matières) de l’étudiant Dubois
 SELECT
@@ -238,7 +250,7 @@ WHERE
     M.nomM = 'Programmation'
     AND N.note > (
         SELECT
-            MAX(N2.note)
+            MAX(N2.note) -- Sélectionne la note maximale de Dubois
         FROM
             Noter N2
             JOIN Etudiant E2 ON N2.numEtu = E2.numEtu
@@ -251,9 +263,10 @@ NOM                            NOTE
 ------------------------ ----------
 Martin                           18
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- i) Une erreur a été commise dans la saisie des notes, il faut augmenter de 2 pts les notes de
 -- Programmation de tous les étudiants présents.
--- Afficher les notes de Programmation avant la mise à jour
+-- Afficher les notes de Programmation avant la mise à jour pour comparer 
 SELECT
     E.nomE AS Nom,
     N.note AS Note
@@ -319,3 +332,38 @@ Yang
 
 9 rows selected.
  */
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- j) Créer la vue VueF qui permet de visualiser les noms et sexes des étudiants avec le libellé
+-- de leur formation. A partir de la vue, lister les étudiants (Nom) masculins de la formation L3 Info.
+-- Création de la vue VueF pour visualiser les noms et sexes des étudiants avec le libellé de leur formation
+CREATE VIEW
+    VueF AS
+SELECT
+    E.NomE AS Nom,
+    E.Sexe AS Sexe,
+    F.Libelle AS Formation
+FROM
+    Etudiant E
+    JOIN Formation F ON E.CodeF = F.CodeF;
+
+-- View created.
+SELECT
+    Nom
+FROM
+    VueF
+WHERE
+    Sexe = 'M'
+    AND Formation = 'L3 Info';
+
+/*
+NOM
+------------------------
+Dupond
+Dubois
+Yang
+ */
+/*
+On a fait ca pour simplifier la requete en encapsulant des requêtes complexes et simplifient l'accès aux données
+la view VueF est créée pour visualiser les noms et sexes des étudiants avec le libellé de leur formation. 
+Ensuite, la vue est utilisée pour lister les étudiants masculins de la formation L3 Info.
+*/

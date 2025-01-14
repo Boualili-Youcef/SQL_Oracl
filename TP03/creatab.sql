@@ -11,6 +11,14 @@
 
 -- 1.1 Création des tables:
 -- Suppression des tables existantes
+DROP SEQUENCE promo_seq;
+
+DROP TABLE promotions CASCADE CONSTRAINTS;
+
+DROP TABLE HYPERMARCHE_RAYON CASCADE CONSTRAINTS;
+
+DROP TABLE Habitant_Calais CASCADE CONSTRAINTS;
+
 DROP TABLE PRODUITS CASCADE CONSTRAINTS;
 
 DROP TABLE RAYON CASCADE CONSTRAINTS;
@@ -18,6 +26,8 @@ DROP TABLE RAYON CASCADE CONSTRAINTS;
 DROP TABLE HYPERMARCHE CASCADE CONSTRAINTS;
 
 DROP TABLE EMPLOYE CASCADE CONSTRAINTS;
+
+
 
 /*
 -- Résultat après l'exécution des commandes : 
@@ -83,6 +93,17 @@ CREATE TABLE
         QUANTITESTOCKHYPER NUMBER NOT NULL,
         CONSTRAINT fk_rayon FOREIGN KEY (NUMERORAYON) REFERENCES RAYON (NUMERO)
     );
+
+-- Création de la table promotions
+CREATE TABLE promotions (
+numero VARCHAR(6),
+numproduit VARCHAR(6),
+pourcentage_remise NUMBER(4,2),
+date_debut DATE,
+date_fin DATE,
+CONSTRAINT pk_promotions PRIMARY KEY (numero),
+CONSTRAINT fk_promotions_produits FOREIGN KEY (numproduit) REFERENCES produits(numero)) ;
+
 
 /*
 

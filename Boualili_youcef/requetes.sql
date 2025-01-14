@@ -76,9 +76,9 @@ Note
  */
 /*
 -- Analyse de la sortie du plan d'exécution
--- 2. SORT ORDER BY : Les résultats sont triés.
--- 3. TABLE ACCESS FULL : Un accès complet à la table ETUDIANT.
--- 4. Filtre : Le filtre "CODEF = 3".
+-- 1. SORT ORDER BY : Les résultats sont triés.
+-- 2. TABLE ACCESS FULL : Un accès complet à la table ETUDIANT.
+-- 3. Filtre : Le filtre "CODEF = 3".
 -- 5. Coût : Le coût total estimé de l'exécution est de 4.
  */
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

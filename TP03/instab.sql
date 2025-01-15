@@ -406,7 +406,7 @@ SET SERVEROUTPUT ON;
 
 -- *****************************************************************************
 -- 1.3.1 Bloc PL/SQL pour insérer un employé
-/*
+
 DECLARE
     v_numero EMPLOYE.NUMERO%TYPE;
     v_nom EMPLOYE.NOM%TYPE;
@@ -425,7 +425,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Employe Insere');
 END;
 /
-*/
+
 /*
 Resultat:
 
@@ -462,7 +462,7 @@ EMP0587    Boualili                       Youcef
 -- *****************************************************************************
 -- 1.3.2 Bloc PL/SQL pour insérer un employé
 -- Bloc PL/SQL pour afficher les informations d'un employé
-/*
+
 DECLARE
     v_numero EMPLOYE.NUMERO%TYPE;
     v_nom EMPLOYE.NOM%TYPE;
@@ -491,7 +491,7 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Aucun employe trouve avec le numero ' || v_numero);
 END;
 /
-*/
+
 /*
 resultat:
 Enter value for numero: EMP7862
@@ -567,14 +567,41 @@ PL/SQL procedure successfully completed.
 */
 
 -- *****************************************************************************
--- 1.3.4 *
+-- 1.3.4 Bloc PL/SQL pour créer une promotion
 
+-- je créer une séquence pour générer les numéros de promotion
+-- je vérifie si la séquence existe sinon je la crée
+DECLARE 
+    v_promo_seq NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_promo_seq
+    FROM USER_SEQUENCES
+    WHERE SEQUENCE_NAME = 'PROMO_SEQ';
 
-CREATE SEQUENCE promo_seq
-    START WITH 1
-    INCREMENT BY 1
-    NOCACHE
-    NOCYCLE;
+    IF v_promo_seq = 0 THEN
+        -- je crée la séquence promo_seq si elle n'existe pas
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE promo_seq
+            START WITH 1
+            INCREMENT BY 1
+            NOCACHE
+            NOCYCLE';
+        DBMS_OUTPUT.PUT_LINE('Sequence promo_seq cree avec succes.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Sequence promo_seq existe deja.');
+    END IF;
+END;
+/
+
+/*
+RESULTAT:
+
+Sequence promo_seq existe deja.
+ou 
+Sequence promo_seq cree avec succes.
+
+PL/SQL procedure successfully completed. 
+*/
 
 DECLARE
     v_numproduit PRODUITS.NUMERO%TYPE;
@@ -599,7 +626,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('Le numero de produit ' || v_numproduit || ' n existe pas.');
     ELSE
         -- Generer le num de promotion
-        v_promotion_num := 'PR' || TO_CHAR(promo_seq.NEXTVAL, 'FM0000');
+        v_promotion_num := 'PRO' || TO_CHAR(promo_seq.NEXTVAL, 'FM000');
 
         -- Inserer promotion
         INSERT INTO PROMOTIONS (numero, numproduit, pourcentage_remise, date_debut, date_fin)
@@ -627,7 +654,7 @@ Enter value for pourcentage_remise: 5
 old  10:     v_pourcentage_remise := '&pourcentage_remise';
 new  10:     v_pourcentage_remise := '5';
 Promotion cree avec succes.
-Numero Promotion : PR0001
+Numero Promotion : PRO001
 Produit : PR1234
 Pourcentage de remise : 5%
 Date de debut : 14/01/2025
@@ -636,16 +663,28 @@ Date de fin : 14/02/2025
 PL/SQL procedure successfully completed.
 */
 
+-- Vérification de l'insertion
 /*
--- Activer l'affichage des messages
-SET SERVEROUTPUT ON;
+SQL> SELECT * FROM PROMOTIONS;
+
+NUMERO NUMPRO POURCENTAGE_REMISE DATE_DEBU DATE_FIN
+------ ------ ------------------ --------- ---------
+PRO001 PR1234                  5 15-JAN-25 15-FEB-25
+PRO002 PR6765                 10 15-JAN-25 15-FEB-25
+*/
+
+-- *****************************************************************************
+-- 1.3.5 mettre à jour le stock d'un produit dont le numéro est saisi au clavier.
 
 -- Bloc PL/SQL pour mettre à jour le stock d'un produit
 DECLARE
-    v_num_produit PRODUITS.NUMERO%TYPE := '&num_produit';
-    v_nouveau_stock PRODUITS.QUANTITESTOCKHYPER%TYPE := &nouveau_stock;
+    v_num_produit PRODUITS.NUMERO%TYPE;
+    v_nouveau_stock PRODUITS.QUANTITESTOCKHYPER%TYPE;
     v_count NUMBER;
 BEGIN
+    v_num_produit := '&v_num_produit';
+    v_nouveau_stock := '&v_nouveau_stock';
+
     -- Vérifier si le produit existe
     SELECT COUNT(*)
     INTO v_count
@@ -653,19 +692,50 @@ BEGIN
     WHERE NUMERO = v_num_produit;
 
     IF v_count = 0 THEN
-        DBMS_OUTPUT.PUT_LINE('Le numéro de produit ' || v_num_produit || ' n\'existe pas.');
+        DBMS_OUTPUT.PUT_LINE('Le numero de produit ' || v_num_produit || ' n existe pas.');
     ELSE
         -- Mettre à jour le stock
         UPDATE PRODUITS
         SET QUANTITESTOCKHYPER = v_nouveau_stock
         WHERE NUMERO = v_num_produit;
 
-        DBMS_OUTPUT.PUT_LINE('Le stock du produit ' || v_num_produit || ' a été mis à jour à ' || v_nouveau_stock || '.');
+        DBMS_OUTPUT.PUT_LINE('Le stock du produit ' || v_num_produit || ' a ete mis a jour a ' || v_nouveau_stock || '.');
     END IF;
-
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Une erreur s\'est produite : ' || SQLERRM);
 END;
 /
+
+/* 
+RESULTAT:
+
+Enter value for v_num_produit: PR1234
+old   6:     v_num_produit := '&v_num_produit';
+new   6:     v_num_produit := 'PR1234';
+Enter value for v_nouveau_stock: 5000
+old   7:     v_nouveau_stock := '&v_nouveau_stock';
+new   7:     v_nouveau_stock := '5000';
+Le stock du produit PR1234 a ete mis a jour a 5000.
+
+PL/SQL procedure successfully completed.
+
+SQL> select * FROM PRODUITS; 
+
+NUMERO     LIBELLE                        NUMERORAYO PRIXUNITAIRE
+---------- ------------------------------ ---------- ------------
+UNITE                QUANTITESTOCKHYPER
+-------------------- ------------------
+PR1234     C├┤tes de b┼ôuf                RAY34              12.5
+kg                                  120
+
+PR5783     Chaussure Mike                 RAY67            109.99
+unit├®                            56660
+
+PR6765     SWEAT CORERUNNER               RAY45                59
+unit├®                            87778
 */
+
+
+-- *****************************************************************************
+-- 1.3.6 Meme bloques PL/SQL mais avec des exceptions
+
+-- Bloc PL/SQL pour insérer un employé
+

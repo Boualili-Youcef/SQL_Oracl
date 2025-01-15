@@ -460,8 +460,7 @@ EMP0587    Boualili                       Youcef
 */
 
 -- *****************************************************************************
--- 1.3.2 Bloc PL/SQL pour insérer un employé
--- Bloc PL/SQL pour afficher les informations d'un employé
+-- 1.3.2 Bloc PL/SQL pour afficher les informations d'un employé
 
 DECLARE
     v_numero EMPLOYE.NUMERO%TYPE;
@@ -485,10 +484,6 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Prenom : ' || v_prenom);
     DBMS_OUTPUT.PUT_LINE('Adresse : ' || v_adresse);
 
--- Si l'employé n'existe pas je declenche une exception
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Aucun employe trouve avec le numero ' || v_numero);
 END;
 /
 
@@ -506,15 +501,6 @@ Adresse : 543, rue durand, Calais
 PL/SQL procedure successfully completed.
 */
 
--- Cas d'exception : Employé inexistant
-/*
-Enter value for numero: EMP58744
-old   8:     v_numero := '&numero';
-new   8:     v_numero := 'EMP58744';
-Aucun employe trouve avec le numero EMP58744
-
-PL/SQL procedure successfully completed.
-*/
 
 -- *****************************************************************************
 -- 1.3.3 Bloc PL/SQL affiche la moyenne des prix des produits d'un hypermarché
@@ -738,4 +724,84 @@ unit├®                            87778
 -- 1.3.6 Meme bloques PL/SQL mais avec des exceptions
 
 -- Bloc PL/SQL pour insérer un employé
+DECLARE
+    v_numero EMPLOYE.NUMERO%TYPE;
+    v_nom EMPLOYE.NOM%TYPE;
+    v_prenom EMPLOYE.PRENOM%TYPE;
+    v_adresse EMPLOYE.ADRESSE%TYPE;
+BEGIN
+    -- Lire les champs de l'employé depuis le clavier
+    v_numero := '&numero';
+    v_nom := '&nom';
+    v_prenom := '&prenom';
+    v_adresse := '&adresse';
+
+    -- Insérer l'employé dans la table EMPLOYE
+    INSERT INTO EMPLOYE (NUMERO, NOM, PRENOM, ADRESSE) VALUES (v_numero, v_nom, v_prenom, v_adresse);
+
+    DBMS_OUTPUT.PUT_LINE('Employe Insere');
+
+EXCEPTION
+    -- Pour verifier que le numero n'existe pas
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Le numero ' || v_numero || ' existe deja.');
+    -- Pour verifier que les valeurs sont correctes
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Valeur incorrecte fournie.');
+    -- Autres erreurs
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
+END;
+/
+
+/*
+RESULTAT:
+Enter value for numero: EMP1090    
+old   8:     v_numero := '&numero';
+new   8:     v_numero := 'EMP1090';
+Enter value for nom: White 
+old   9:     v_nom := '&nom';
+new   9:     v_nom := 'White';
+Enter value for prenom: Walter
+old  10:     v_prenom := '&prenom';
+new  10:     v_prenom := 'Walter';
+Enter value for adresse: 125, STREET, Albuquerquie
+old  11:     v_adresse := '&adresse';
+new  11:     v_adresse := '125, STREET, Albuquerquie';
+Erreur : Le numero EMP1090 existe deja.
+
+PL/SQL procedure successfully completed.
+*/
+
+-- *****************************************************************************
+DECLARE
+    v_numero EMPLOYE.NUMERO%TYPE := '&numero';
+    v_nom EMPLOYE.NOM%TYPE;
+    v_prenom EMPLOYE.PRENOM%TYPE;
+    v_adresse EMPLOYE.ADRESSE%TYPE;
+BEGIN
+    -- Sélectionner l'employé avec le numéro v_numero
+    SELECT NOM, PRENOM, ADRESSE
+    INTO v_nom, v_prenom, v_adresse
+    FROM EMPLOYE
+    WHERE NUMERO = v_numero;
+
+    -- Afficher les informations de l'employé
+    DBMS_OUTPUT.PUT_LINE('Informations de l employe :');
+    DBMS_OUTPUT.PUT_LINE('Numero : ' || v_numero);
+    DBMS_OUTPUT.PUT_LINE('Nom : ' || v_nom);
+    DBMS_OUTPUT.PUT_LINE('Prenom : ' || v_prenom);
+    DBMS_OUTPUT.PUT_LINE('Adresse : ' || v_adresse);
+
+EXCEPTION
+    -- Pour verifier que le numero n'existe pas
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Aucun employe trouve avec le numero ' || v_numero || '.');
+    -- Plusieurs employes trouves avec le meme numero
+    WHEN TOO_MANY_ROWS THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Plusieurs employes trouves avec le numero ' || v_numero || '.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
+END;
+/
 

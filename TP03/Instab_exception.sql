@@ -69,284 +69,6 @@ INSERT INTO PRODUITS (NUMERO, LIBELLE, NUMERORAYON, PRIXUNITAIRE, UNITE, QUANTIT
  1 rows created.
 */
 
-
-
--- *****************************************************************************
--- ******************************* Vérification ********************************
--- *****************************************************************************
-
-select * from  EMPLOYE;
-
-/*
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP1090    DUPONT                         Jean
-332, rue jean-dupont, Calais
-
-EMP1301    DUVIVIER                       Renaud
-345, rue renaud-duviver, Paris
-
-EMP1208    GODART                         Claude
-674, rue claude-godart, Ardre
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2025    FONTAINE                       Fabien
-456, rue jean-louis, Calais
-
-EMP1505    VASSEUR                        Jacques
-778, rue vasseur, Saint-Omer
-
-EMP7645    BERNARD                        Martin
-876, rue martin, Sangatte
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2341    RICHARD                        Philipe
-955, rue bernard, Coudekerque
-
-EMP8765    Hugo                           Victor
-432, rue victor-hugo, Frethun
-
-EMP4328    Stevenson                      Max
-874, rue max-stevenson, Cologne
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP7862    DURAND                         Christophe
-543, rue durand, Calais
-
-EMP1190    ROGER                          St├®phane
-362, rue st├®phane-roger, Ardre
-
-EMP1401    ROUSSELLE                      Nicolas
-397, rue noclas-rousselle, St-Omer
-
-
-12 rows selected.
-*/
-
-
--- SQL> rollback;
-
--- Rollback complete.
-
-
--- SQL> select * from  EMPLOYE;
-
--- no rows selected
-
--- SQL> commit;
-
--- Commit complete.
-
-/*
-SQL> select * from EMPLOYE;
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP1090    DUPONT                         Jean
-332, rue jean-dupont, Calais
-
-EMP1301    DUVIVIER                       Renaud
-345, rue renaud-duviver, Paris
-
-EMP1208    GODART                         Claude
-674, rue claude-godart, Ardre
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2025    FONTAINE                       Fabien
-456, rue jean-louis, Calais
-
-EMP1505    VASSEUR                        Jacques
-778, rue vasseur, Saint-Omer
-
-EMP7645    BERNARD                        Martin
-876, rue martin, Sangatte
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2341    RICHARD                        Philipe
-955, rue bernard, Coudekerque
-
-EMP8765    Hugo                           Victor
-432, rue victor-hugo, Frethun
-
-EMP4328    Stevenson                      Max
-874, rue max-stevenson, Cologne
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP7862    DURAND                         Christophe
-543, rue durand, Calais
-
-EMP1190    ROGER                          St├®phane
-362, rue st├®phane-roger, Ardre
-
-EMP1401    ROUSSELLE                      Nicolas
-397, rue noclas-rousselle, St-Omer
-
-
-12 rows selected.
-
-SQL> rollback;
-
-Rollback complete.
-
-SQL> select * from EMPLOYE;
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP1090    DUPONT                         Jean
-332, rue jean-dupont, Calais
-
-EMP1301    DUVIVIER                       Renaud
-345, rue renaud-duviver, Paris
-
-EMP1208    GODART                         Claude
-674, rue claude-godart, Ardre
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2025    FONTAINE                       Fabien
-456, rue jean-louis, Calais
-
-EMP1505    VASSEUR                        Jacques
-778, rue vasseur, Saint-Omer
-
-EMP7645    BERNARD                        Martin
-876, rue martin, Sangatte
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2341    RICHARD                        Philipe
-955, rue bernard, Coudekerque
-
-EMP8765    Hugo                           Victor
-432, rue victor-hugo, Frethun
-
-EMP4328    Stevenson                      Max
-874, rue max-stevenson, Cologne
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP7862    DURAND                         Christophe
-543, rue durand, Calais
-
-EMP1190    ROGER                          St├®phane
-362, rue st├®phane-roger, Ardre
-
-EMP1401    ROUSSELLE                      Nicolas
-397, rue noclas-rousselle, St-Omer
-
-
-12 rows selected.
-
-*/
-
--- SQL> rollback;
-
--- Rollback complete.
-
-/*
-SQL> select * from EMPLOYE;
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP1090    DUPONT                         Jean
-332, rue jean-dupont, Calais
-
-EMP1301    DUVIVIER                       Renaud
-345, rue renaud-duviver, Paris
-
-EMP1208    GODART                         Claude
-674, rue claude-godart, Ardre
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2025    FONTAINE                       Fabien
-456, rue jean-louis, Calais
-
-EMP1505    VASSEUR                        Jacques
-778, rue vasseur, Saint-Omer
-
-EMP7645    BERNARD                        Martin
-876, rue martin, Sangatte
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP2341    RICHARD                        Philipe
-955, rue bernard, Coudekerque
-
-EMP8765    Hugo                           Victor
-432, rue victor-hugo, Frethun
-
-EMP4328    Stevenson                      Max
-874, rue max-stevenson, Cologne
-
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP7862    DURAND                         Christophe
-543, rue durand, Calais
-
-EMP1190    ROGER                          St├®phane
-362, rue st├®phane-roger, Ardre
-
-EMP1401    ROUSSELLE                      Nicolas
-397, rue noclas-rousselle, St-Omer
-
-
-12 rows selected.
-
-SQL>
-*/
-
-
 -- 1.2 Création dynamique de tables
 
 -- Création de la table Habitant_Calais à partir de la table EMPLOYE
@@ -405,8 +127,9 @@ Dealer Price                   Boucherie                              500000
 SET SERVEROUTPUT ON;
 
 -- *****************************************************************************
--- 1.3.1 Bloc PL/SQL pour insérer un employé
+-- 1.3.6 Meme bloques PL/SQL mais avec des exceptions
 
+-- Bloc PL/SQL pour insérer un employé
 DECLARE
     v_numero EMPLOYE.NUMERO%TYPE;
     v_nom EMPLOYE.NOM%TYPE;
@@ -423,85 +146,80 @@ BEGIN
     INSERT INTO EMPLOYE (NUMERO, NOM, PRENOM, ADRESSE) VALUES (v_numero, v_nom, v_prenom, v_adresse);
 
     DBMS_OUTPUT.PUT_LINE('Employe Insere');
+
+EXCEPTION
+    -- Pour verifier que le numero n'existe pas
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Le numero ' || v_numero || ' existe deja.');
+    -- Pour verifier que les valeurs sont correctes
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Valeur incorrecte fournie.');
+    -- Autres erreurs
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
 END;
 /
 
 /*
-Resultat:
-
-Enter value for numero: EMP0587
+RESULTAT:
+Enter value for numero: EMP1090    
 old   8:     v_numero := '&numero';
-new   8:     v_numero := 'EMP0587';
-Enter value for nom: Boualili
+new   8:     v_numero := 'EMP1090';
+Enter value for nom: White 
 old   9:     v_nom := '&nom';
-new   9:     v_nom := 'Boualili';
-Enter value for prenom: Youcef
+new   9:     v_nom := 'White';
+Enter value for prenom: Walter
 old  10:     v_prenom := '&prenom';
-new  10:     v_prenom := 'Youcef';
-Enter value for adresse: 18, toto , Calais
+new  10:     v_prenom := 'Walter';
+Enter value for adresse: 125, STREET, Albuquerquie
 old  11:     v_adresse := '&adresse';
-new  11:     v_adresse := '18, toto , Calais';
-Employe Insere
+new  11:     v_adresse := '125, STREET, Albuquerquie';
+Erreur : Le numero EMP1090 existe deja.
 
-PL/SQL procedure successfully completed.    
-*/
-
--- Vérification de l'insertion
-
-/*
-SQL> SELECT * FROM EMPLOYE WHERE NUMERO = 'EMP0587';
-
-NUMERO     NOM                            PRENOM
----------- ------------------------------ --------------------
-ADRESSE
---------------------------------------------------------------------------------
-EMP0587    Boualili                       Youcef
-18, toto , Calais
+PL/SQL procedure successfully completed.
 */
 
 -- *****************************************************************************
--- 1.3.2 Bloc PL/SQL pour insérer un employé
--- Bloc PL/SQL pour afficher les informations d'un employé
-
 DECLARE
-    v_numero EMPLOYE.NUMERO%TYPE;
+    v_numero EMPLOYE.NUMERO%TYPE := '&numero';
     v_nom EMPLOYE.NOM%TYPE;
     v_prenom EMPLOYE.PRENOM%TYPE;
     v_adresse EMPLOYE.ADRESSE%TYPE;
 BEGIN
-    -- Lire le numéro de l'employé depuis le clavier
-    v_numero := '&numero';
-
-    -- Selectionner l'employe avec le numero v_numero
+    -- Sélectionner l'employé avec le numéro v_numero
     SELECT NOM, PRENOM, ADRESSE
     INTO v_nom, v_prenom, v_adresse
     FROM EMPLOYE
     WHERE NUMERO = v_numero;
 
-    -- Afficher les informations de l'employe
+    -- Afficher les informations de l'employé
     DBMS_OUTPUT.PUT_LINE('Informations de l employe :');
     DBMS_OUTPUT.PUT_LINE('Numero : ' || v_numero);
     DBMS_OUTPUT.PUT_LINE('Nom : ' || v_nom);
     DBMS_OUTPUT.PUT_LINE('Prenom : ' || v_prenom);
     DBMS_OUTPUT.PUT_LINE('Adresse : ' || v_adresse);
 
+EXCEPTION
+    -- Pour verifier que le numero n'existe pas
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Aucun employe trouve avec le numero ' || v_numero || '.');
+    -- Plusieurs employes trouves avec le meme numero
+    WHEN TOO_MANY_ROWS THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Plusieurs employes trouves avec le numero ' || v_numero || '.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
 END;
 /
 
 /*
-resultat:
-Enter value for numero: EMP7862
-old   8:     v_numero := '&numero';
-new   8:     v_numero := 'EMP7862';
-Informations de l employe :
-Numero : EMP7862
-Nom : DURAND
-Prenom : Christophe
-Adresse : 543, rue durand, Calais
+RESULTAT:
+Enter value for numero: 4556
+old   2:     v_numero EMPLOYE.NUMERO%TYPE := '&numero';
+new   2:     v_numero EMPLOYE.NUMERO%TYPE := '4556';
+Aucun employe trouve avec le numero 4556.
 
 PL/SQL procedure successfully completed.
 */
-
 
 -- *****************************************************************************
 -- 1.3.3 Bloc PL/SQL affiche la moyenne des prix des produits d'un hypermarché
@@ -532,32 +250,25 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('La moyenne des prix des produits de l hypermarche ' || v_numero_hyper || ' est : ' || v_moyenne_prix);
 
     END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Aucun produit trouve pour l hypermarche ' || v_numero_hyper);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
 END;
 /
 
 /*
-resultat: (si existant)
-Enter value for numero_hyper: HYP12
+RESULTAT:
+Enter value for numero_hyper: hi
 old   6:     v_numero_hyper := '&numero_hyper';
-new   6:     v_numero_hyper := 'HYP12';
-La moyenne des prix des produits de l hypermarche HYP12 est : 12.5
-
-PL/SQL procedure successfully completed.
-
-(si inexistant):
-Enter value for numero_hyper: 555
-old   6:     v_numero_hyper := '&numero_hyper';
-new   6:     v_numero_hyper := '555';
-Le numero d hypermarche 555 n existe pas.
-
-PL/SQL procedure successfully completed.
+new   6:     v_numero_hyper := 'hi';
+Le numero d hypermarche hi n existe pas.
 */
 
 -- *****************************************************************************
--- 1.3.4 Bloc PL/SQL pour créer une promotion
-
--- je créer une séquence pour générer les numéros de promotion
--- je vérifie si la séquence existe sinon je la crée
+-- 1.3.4 Bloc PL/SQL affiche 
 DECLARE 
     v_promo_seq NUMBER;
 BEGIN
@@ -579,16 +290,6 @@ BEGIN
     END IF;
 END;
 /
-
-/*
-RESULTAT:
-
-Sequence promo_seq existe deja.
-ou 
-Sequence promo_seq cree avec succes.
-
-PL/SQL procedure successfully completed. 
-*/
 
 DECLARE
     v_numproduit PRODUITS.NUMERO%TYPE;
@@ -626,39 +327,28 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('Date de debut : ' || TO_CHAR(v_date_debut, 'DD/MM/YYYY'));
         DBMS_OUTPUT.PUT_LINE('Date de fin : ' || TO_CHAR(v_date_fin, 'DD/MM/YYYY'));
     END IF;
-
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Une promotion avec le numero ' || v_promotion_num || ' existe deja.');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Valeur incorrecte fournie.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
 END;
 /
 
 /*
-resultat:
-Sequence created.
-
-Enter value for numproduit: PR1234
+RESULTAT:
+Enter value for numproduit: 456
 old   9:     v_numproduit := '&numproduit';
-new   9:     v_numproduit := 'PR1234';
-Enter value for pourcentage_remise: 5
+new   9:     v_numproduit := '456';
+Enter value for pourcentage_remise:
 old  10:     v_pourcentage_remise := '&pourcentage_remise';
-new  10:     v_pourcentage_remise := '5';
-Promotion cree avec succes.
-Numero Promotion : PRO001
-Produit : PR1234
-Pourcentage de remise : 5%
-Date de debut : 14/01/2025
-Date de fin : 14/02/2025
+new  10:     v_pourcentage_remise := '';
 
-PL/SQL procedure successfully completed.
+Le numero de produit 456 n existe pas.
 */
 
--- Vérification de l'insertion
-/*
-SQL> SELECT * FROM PROMOTIONS;
-
-NUMERO NUMPRO POURCENTAGE_REMISE DATE_DEBU DATE_FIN
------- ------ ------------------ --------- ---------
-PRO001 PR1234                  5 15-JAN-25 15-FEB-25
-PRO002 PR6765                 10 15-JAN-25 15-FEB-25
-*/
 
 -- *****************************************************************************
 -- 1.3.5 mettre à jour le stock d'un produit dont le numéro est saisi au clavier.
@@ -688,35 +378,24 @@ BEGIN
 
         DBMS_OUTPUT.PUT_LINE('Le stock du produit ' || v_num_produit || ' a ete mis a jour a ' || v_nouveau_stock || '.');
     END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Le numero de produit ' || v_num_produit || ' n existe pas.');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Valeur incorrecte fournie.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
 END;
 /
 
-/* 
+/*
 RESULTAT:
 
-Enter value for v_num_produit: PR1234
+Enter value for v_num_produit: 456 
 old   6:     v_num_produit := '&v_num_produit';
-new   6:     v_num_produit := 'PR1234';
-Enter value for v_nouveau_stock: 5000
+new   6:     v_num_produit := '456';
+Enter value for v_nouveau_stock:
 old   7:     v_nouveau_stock := '&v_nouveau_stock';
-new   7:     v_nouveau_stock := '5000';
-Le stock du produit PR1234 a ete mis a jour a 5000.
-
-PL/SQL procedure successfully completed.
-
-SQL> select * FROM PRODUITS; 
-
-NUMERO     LIBELLE                        NUMERORAYO PRIXUNITAIRE
----------- ------------------------------ ---------- ------------
-UNITE                QUANTITESTOCKHYPER
--------------------- ------------------
-PR1234     C├┤tes de b┼ôuf                RAY34              12.5
-kg                                  120
-
-PR5783     Chaussure Mike                 RAY67            109.99
-unit├®                            56660
-
-PR6765     SWEAT CORERUNNER               RAY45                59
-unit├®                            87778
+new   7:     v_nouveau_stock := '';
+Le numero de produit 456 n existe pas.
 */
-

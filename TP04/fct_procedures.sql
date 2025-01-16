@@ -1,6 +1,6 @@
 /* 
 -- Nom: Boualil 
--- Prénom: Youcef
+-- Prenom: Youcef
 -- L3 Informatique
  */
 
@@ -122,3 +122,54 @@ Rayon: Poissonnerie, CA: 950000, Responsable: RICHARD Philipe
 
 PL/SQL procedure successfully completed.
 */
+
+-- *****************************************************************************
+CREATE OR REPLACE PROCEDURE Produit_vendu (
+    p_num_produit IN PRODUITS.NUMERO%TYPE,
+    p_quantite_vendue IN NUMBER
+)
+IS
+    v_quantite_stock PRODUITS.QUANTITESTOCKHYPER%TYPE;
+    v_prix_unitaire PRODUITS.PRIXUNITAIRE%TYPE;
+    v_num_rayon PRODUITS.NUMERORAYON%TYPE;
+    v_chiffre_affaire RAYON.CHIFFREAFFAIRE%TYPE;
+BEGIN
+    SELECT QUANTITESTOCKHYPER, PRIXUNITAIRE, NUMERORAYON
+    INTO v_quantite_stock, v_prix_unitaire, v_num_rayon
+    FROM PRODUITS
+    WHERE NUMERO = p_num_produit;
+
+    -- je vérifie si la quantité en stock est suffisante
+    IF v_quantite_stock < p_quantite_vendue THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Quantité en stock insuffisante pour le produit ' || p_num_produit);
+        RETURN;
+    END IF;
+
+    -- Mettre à jour la quantité
+    UPDATE PRODUITS
+    SET QUANTITESTOCKHYPER = v_quantite_stock - p_quantite_vendue
+    WHERE NUMERO = p_num_produit;
+
+    -- Calculer le chiffre d'affaires 
+    v_chiffre_affaire := p_quantite_vendue * v_prix_unitaire;
+
+    -- Mettre à jour le chiffre d'affaires du rayon
+    UPDATE RAYON
+    SET CHIFFREAFFAIRE = CHIFFREAFFAIRE + v_chiffre_affaire
+    WHERE NUMERO = v_num_rayon;
+
+    DBMS_OUTPUT.PUT_LINE('Le produit ' || p_num_produit || ' a ete vendu. Quantite vendue : ' || p_quantite_vendue || '. Chiffre d affaires genere : ' || v_chiffre_affaire);
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : Le produit ' || p_num_produit || ' n existe pas.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Une erreur s est produite : ' || SQLERRM);
+END;
+/
+
+-- Test de la procédure Produit_vendu
+BEGIN
+    Produit_vendu('PR1234', 10); 
+END;
+/

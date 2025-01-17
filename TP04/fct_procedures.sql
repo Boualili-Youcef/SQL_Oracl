@@ -300,10 +300,10 @@ IS
 
     v_rayon_num RAYON.NUMERO%TYPE;
     v_responsable_num RAYON.NUMERORESPONSABLE%TYPE;
-    v_chiffre_affaire RAYON.CHIFFREAFFAIRE%TYPE; -- Added declaration
+    v_chiffre_affaire RAYON.CHIFFREAFFAIRE%TYPE; 
     v_montant_prime NUMBER(10, 2);
     v_mois_annee VARCHAR2(7) := TO_CHAR(SYSDATE, 'MM/YYYY');
-    v_prime_num VARCHAR2(20); -- Augmenter la taille de cette variable
+    v_prime_num VARCHAR2(20); 
     v_counter NUMBER := 0;
 BEGIN
     OPEN c_top_rayons;
@@ -319,7 +319,6 @@ BEGIN
             ELSE 0
         END;
 
-        -- Use SEQ_PRIME_NUM sequence for numero
         v_prime_num := 'PRIME' || TO_CHAR(SEQ_PRIME_NUM.NEXTVAL);
 
         INSERT INTO Primes (numero, numeroEmploye, numeroRayon, montantPrime, moisAnnee)

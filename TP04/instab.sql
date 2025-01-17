@@ -720,3 +720,20 @@ PR6765     SWEAT CORERUNNER               RAY45                59
 unit├®                            87778
 */
 
+-- Create SEQ_PRIME_NUM sequence if it does not exist
+DECLARE
+    v_seq_count NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_seq_count
+    FROM USER_SEQUENCES
+    WHERE SEQUENCE_NAME = 'SEQ_PRIME_NUM';
+
+    IF v_seq_count = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_PRIME_NUM START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE';
+        DBMS_OUTPUT.PUT_LINE('Sequence SEQ_PRIME_NUM cree avec succes.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Sequence SEQ_PRIME_NUM existe deja.');
+    END IF;
+END;
+/

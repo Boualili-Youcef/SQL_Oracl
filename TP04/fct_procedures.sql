@@ -355,4 +355,60 @@ PRIME2     EMP7862    RAY34               750 01/2025
 PRIME3     EMP2341    RAY86               500 01/2025
 */
 
+-- *****************************************************************************
 
+CREATE OR REPLACE PROCEDURE Afficher_Cumul_Primes (
+    p_num_hyper IN HYPERMARCHE.NUMERO%TYPE
+)
+IS
+BEGIN
+    FOR rec IN (
+        SELECT R.NUMERORESPONSABLE, E.NOM, E.PRENOM, NVL(SUM(P.MONTANTPRIME), 0) AS CUMUL_PRIMES
+        FROM RAYON R
+        LEFT JOIN EMPLOYE E ON R.NUMERORESPONSABLE = E.NUMERO
+        LEFT JOIN PRIMES P ON R.NUMERORESPONSABLE = P.NUMEROEMPLOYE
+        WHERE R.NUMEROHYPER = p_num_hyper
+        GROUP BY R.NUMERORESPONSABLE, E.NOM, E.PRENOM
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Responsable: ' || rec.NOM || ' ' || rec.PRENOM || ', Cumul des primes: ' || rec.CUMUL_PRIMES);
+    END LOOP;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE Afficher_Cumul_Primes_Desc (
+    p_num_hyper IN HYPERMARCHE.NUMERO%TYPE
+)
+IS
+BEGIN
+    FOR rec IN (
+        SELECT R.NUMERORESPONSABLE, E.NOM, E.PRENOM, NVL(SUM(P.MONTANTPRIME), 0) AS CUMUL_PRIMES
+        FROM RAYON R
+        LEFT JOIN EMPLOYE E ON R.NUMERORESPONSABLE = E.NUMERO
+        LEFT JOIN PRIMES P ON R.NUMERORESPONSABLE = P.NUMEROEMPLOYE
+        WHERE R.NUMEROHYPER = p_num_hyper
+        GROUP BY R.NUMERORESPONSABLE, E.NOM, E.PRENOM
+        ORDER BY CUMUL_PRIMES DESC
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Responsable: ' || rec.NOM || ' ' || rec.PRENOM || ', Cumul des primes: ' || rec.CUMUL_PRIMES);
+    END LOOP;
+END;
+/
+-- Test de la procédure Afficher_Cumul_Primes
+BEGIN
+    Afficher_Cumul_Primes('HYP56'); 
+END;
+/
+
+-- je l'ai appele 3 fois
+/*
+Procedure created.
+
+Responsable: VASSEUR Jacques, Cumul des primes: 3000 
+Responsable: BERNARD Martin, Cumul des primes: 0
+*/
+
+-- Test de la procédure Afficher_Cumul_Primes_Desc
+BEGIN
+    Afficher_Cumul_Primes_Desc('HYP56'); 
+END;
+/

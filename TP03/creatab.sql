@@ -3,12 +3,9 @@
 -- Prénom: Youcef
 -- L3 Informatique
  */
-
- 
 -- *****************************************************************************
 -- *************** Part 1 : DDL (Data Definition Language) *********************
 -- *****************************************************************************
-
 -- 1.1 Création des tables:
 -- Suppression des tables existantes
 DROP SEQUENCE promo_seq;
@@ -26,8 +23,6 @@ DROP TABLE RAYON CASCADE CONSTRAINTS;
 DROP TABLE HYPERMARCHE CASCADE CONSTRAINTS;
 
 DROP TABLE EMPLOYE CASCADE CONSTRAINTS;
-
-
 
 /*
 -- Résultat après l'exécution des commandes : 
@@ -95,11 +90,13 @@ CREATE TABLE
     );
 
 -- Création de la table promotions
-CREATE TABLE promotions (
-numero VARCHAR(6),
-numproduit VARCHAR(6),
-pourcentage_remise NUMBER(4,2),
-date_debut DATE,
-date_fin DATE,
-CONSTRAINT pk_promotions PRIMARY KEY (numero),
-CONSTRAINT fk_promotions_produits FOREIGN KEY (numproduit) REFERENCES produits(numero)) ;
+CREATE TABLE
+    promotions (
+        numero VARCHAR(6),
+        numproduit VARCHAR(6),
+        pourcentage_remise NUMBER (4, 2),
+        date_debut DATE,
+        date_fin DATE,
+        CONSTRAINT pk_promotions PRIMARY KEY (numero),
+        CONSTRAINT fk_promotions_produits FOREIGN KEY (numproduit) REFERENCES produits (numero)
+    );

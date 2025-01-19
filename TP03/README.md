@@ -1,4 +1,4 @@
-# TP03: Gestion des Transactions et Création Dynamique de Tables
+# TP03: Gestion et Création Dynamique de Tables
 
 ## Organisation du Projet
 

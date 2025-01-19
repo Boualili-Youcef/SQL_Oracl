@@ -36,8 +36,6 @@ Exécutez le script `instab.sql` pour insérer les données.
 
 Après l'insertion des données, vous pouvez exécuter les scripts PL/SQL pour effectuer diverses opérations sur la base de données.
 
-#### Sans gestion des exceptions :
-
 ```sql
 @PL_SQL.sql
 ```

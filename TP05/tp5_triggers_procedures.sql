@@ -604,10 +604,9 @@ SQL>
 -- la base de données
 -- **************************************************************************************************
 
--- les objets LOGS et logs_seq ont été correctement supprimés
+-- Exercice 8 - Version 1 (version d'origine)
 DROP TABLE LOGS CASCADE CONSTRAINTS PURGE;
 DROP SEQUENCE logs_seq;
--- a table LOGS
 CREATE TABLE LOGS (
     numero    NUMBER PRIMARY KEY,
     dates     DATE,
@@ -636,7 +635,32 @@ BEGIN
     VALUES (logs_seq.NEXTVAL, SYSDATE, USER, v_action);
 END;
 /
-
+/*
+-- Exercice 8 - Version 2 (vérification des horaires)
+CREATE OR REPLACE TRIGGER trg_log_promotions_v2
+AFTER INSERT OR UPDATE ON Promotions
+FOR EACH ROW
+DECLARE
+    v_action VARCHAR2(50);
+    v_hr NUMBER;
+BEGIN
+    v_hr := TO_NUMBER(TO_CHAR(SYSDATE, 'HH24'));
+    IF v_hr < 8 OR v_hr >= 20 THEN
+        INSERT INTO LOGS (numero, dates, username, message)
+        VALUES (logs_seq.NEXTVAL, SYSDATE, USER,
+                'Erreur : tentative d''exécution hors des horaires de travail.');
+        RAISE_APPLICATION_ERROR(-20010, 'Requête autorisée uniquement entre 08h et 20h.');
+    END IF;
+    IF INSERTING THEN
+        v_action := 'Ajout dans la table Promotions';
+    ELSIF UPDATING THEN
+        v_action := 'Modification dans la table Promotions';
+    END IF;
+    INSERT INTO LOGS (numero, dates, username, message)
+    VALUES (logs_seq.NEXTVAL, SYSDATE, USER, v_action);
+END;
+/
+*/
 -- Insertion d'une promotion
 INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
 VALUES ('PRO100', 'PR1234', 20, SYSDATE, SYSDATE + 7, 1, 0);
@@ -663,7 +687,6 @@ COMMIT;
 
 -- Resultat attendu:
 /*
-
 Trigger created.
 
 

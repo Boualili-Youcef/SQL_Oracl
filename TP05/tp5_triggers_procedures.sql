@@ -92,3 +92,52 @@ PRO004 PR1234                 20 01-FEB-25 25-FEB-25          1          0
 
 3 rows deleted.
 */
+
+
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 2:
+-- Déclencheur pour mettre en majuscule les champs NOM et PRENOM lors de l'insertion d'un employé
+-- **************************************************************************************************
+
+/*
+Le déclencheur trg_emp_upper est conçu pour convertir les champs NOM et PRENOM 
+en majuscules avant l'insertion d'un nouvel employé dans la table EMPLOYE
+*/
+CREATE OR REPLACE TRIGGER trg_emp_upper
+BEFORE INSERT ON EMPLOYE
+FOR EACH ROW
+BEGIN
+    :new.NOM := UPPER(:new.NOM);
+    :new.PRENOM := UPPER(:new.PRENOM);
+END;
+/
+
+-- Insérer des employés de test
+INSERT INTO EMPLOYE (NUMERO, NOM, PRENOM, ADRESSE)
+VALUES (1, 'white', 'walter', '123 rue du nord');
+
+INSERT INTO EMPLOYE (NUMERO, NOM, PRENOM, ADRESSE)
+VALUES (2, 'pinkman', 'jesse', '456 rue du sud');
+
+INSERT INTO EMPLOYE (NUMERO, NOM, PRENOM, ADRESSE)
+VALUES (3, 'fring', 'gustavo', '789 rue de l''est');
+
+-- Vérifier les employés insérés
+SELECT * FROM EMPLOYE;
+
+-- Resultat attendu:
+/*
+NUMERO     NOM                            PRENOM
+---------- ------------------------------ --------------------
+ADRESSE
+--------------------------------------------------------------------------------
+1          WHITE                          WALTER
+123 rue du nord
+
+2          PINKMAN                        JESSE
+456 rue du sud
+
+3          FRING                          GUSTAVO
+789 rue de l'est
+*/

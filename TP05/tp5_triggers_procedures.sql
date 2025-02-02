@@ -202,3 +202,66 @@ PRO005 PR1234                 10 01-DEC-22 15-DEC-22          0          0
 
 SQL>
 */
+
+
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 4:
+-- Trigger qui annule l'insertion d'une promotion déjà dépassée
+-- **************************************************************************************************
+CREATE OR REPLACE TRIGGER trg_annule_promotion
+BEFORE INSERT ON promotions
+FOR EACH ROW
+BEGIN
+    IF :new.date_fin < SYSDATE THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Impossible d''inserer une promotion deja expiroe.');
+    END IF;
+END;
+/
+
+-- Insérer des promotions de test
+-- Cette insertion devrait échouer car la date de fin est passée
+BEGIN
+    INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
+    VALUES ('PRO008', 'PR1234', 10, TO_DATE('01-DEC-2022', 'DD-MON-YYYY'), TO_DATE('15-DEC-2022', 'DD-MON-YYYY'), 0, 0);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE(SQLERRM);
+END;
+/
+
+-- Cette insertion devrait réussir car la date de fin est dans le futur
+INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
+VALUES ('PRO009', 'PR1234', 15, TO_DATE('01-JAN-2025', 'DD-MON-YYYY'), TO_DATE('25-FEB-2025', 'DD-MON-YYYY'), 0, 0);
+
+-- Vérifier les promotions insérées
+SELECT * FROM Promotions;
+
+-- Supprimer les promotions de test
+DELETE FROM Promotions WHERE numero IN ('PRO008', 'PRO009');
+
+-- resultat attendu
+/*
+Trigger created.
+
+ORA-20001: Impossible d'inserer une promotion deja expiroe.
+ORA-06512: at
+"C##YOUCEF.TRG_ANNULE_PROMOTION", line 3
+ORA-04088: error during execution of
+trigger 'C##YOUCEF.TRG_ANNULE_PROMOTION'
+
+PL/SQL procedure successfully completed.
+
+
+1 row created.
+
+
+NUMERO NUMPRO POURCENTAGE_REMISE DATE_DEBU DATE_FIN     ENCOURS  QTEVENDUE
+------ ------ ------------------ --------- --------- ---------- ----------
+PRO009 PR1234                 15 01-JAN-25 25-FEB-25          1          0
+
+
+1 row deleted.
+
+SQL>
+*/

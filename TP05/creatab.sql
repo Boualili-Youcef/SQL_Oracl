@@ -101,6 +101,8 @@ CREATE TABLE
         pourcentage_remise NUMBER (4, 2),
         date_debut DATE,
         date_fin DATE,
+        encours NUMBER(1) DEFAULT 1,
+        qteVendue NUMBER(10) DEFAULT 0,
         CONSTRAINT pk_promotions PRIMARY KEY (numero),
         CONSTRAINT fk_promotions_produits FOREIGN KEY (numproduit) REFERENCES produits (numero)
     );

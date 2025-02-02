@@ -74,6 +74,10 @@ SET SERVEROUTPUT ON;
 -- *****************************************************************************
 -- 1.3.1 Bloc PL/SQL pour insérer un employé
 -- *****************************************************************************
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Insertion d''un nouvel employe: ');
+END;
+/
 
 -- Bloc PL/SQL pour insérer un employé
 DECLARE
@@ -128,9 +132,13 @@ PL/SQL procedure successfully completed.
 -- _____________________________________________________________________________
 --
 -- *****************************************************************************
--- 1.3.2 Bloc PL/SQL pour insérer un employé
--- Bloc PL/SQL pour afficher les informations d'un employé
+-- 1.3.2 Bloc PL/SQL pour afficher les informations d'un employé
 -- *****************************************************************************
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Affichage des informations d''un employe : ');
+END;
+/
+
 DECLARE
     v_numero EMPLOYE.NUMERO%TYPE := '&numero';
     v_nom EMPLOYE.NOM%TYPE;
@@ -174,6 +182,11 @@ PL/SQL procedure successfully completed.
 
 -- *****************************************************************************
 -- 1.3.3 Bloc PL/SQL affiche la moyenne des prix des produits d'un hypermarché
+-- *****************************************************************************
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Calcul de la moyenne des prix des produits d''un hypermarche : ');
+END;
+/
 
 DECLARE
     v_numero_hyper HYPERMARCHE.NUMERO%TYPE;
@@ -218,13 +231,16 @@ new   6:     v_numero_hyper := 'hi';
 Le numero d hypermarche hi n existe pas.
 */
 
-
 -- _____________________________________________________________________________
 --
 -- *****************************************************************************
 -- 1.3.4 Bloc PL/SQL pour créer une promotion
 -- *****************************************************************************
- 
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Creation d''une nouvelle promotion : ');
+END;
+/
+
 DECLARE 
     v_promo_seq NUMBER;
 BEGIN
@@ -305,13 +321,16 @@ new  10:     v_pourcentage_remise := '';
 Le numero de produit 456 n existe pas.
 */
 
-
 -- _____________________________________________________________________________
 --
 -- *****************************************************************************
--- 1.3.5 mettre à jour le stock d'un produit dont le numéro est saisi au clavier.
+-- 1.3.5 Bloc PL/SQL pour mettre à jour le stock d'un produit
 -- *****************************************************************************
--- Bloc PL/SQL pour mettre à jour le stock d'un produit
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Mise a jour du stock d''un produit : ');
+END;
+/
+
 DECLARE
     v_num_produit PRODUITS.NUMERO%TYPE;
     v_nouveau_stock PRODUITS.QUANTITESTOCKHYPER%TYPE;
@@ -357,7 +376,6 @@ old   7:     v_nouveau_stock := '&v_nouveau_stock';
 new   7:     v_nouveau_stock := '';
 Le numero de produit 456 n existe pas.
 */
-
 
 -- Create SEQ_PRIME_NUM sequence if it does not exist
 DECLARE

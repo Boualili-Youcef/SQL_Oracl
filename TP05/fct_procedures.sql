@@ -464,7 +464,7 @@ BEGIN
     WHERE NUMEROHYPER = p_num_hyper;
 
     IF v_count = 0 THEN
-        DBMS_OUTPUT.PUT_LINE('Aucun responsable trouvé pour cet hypermarché.');
+        DBMS_OUTPUT.PUT_LINE('Aucun responsable trouve pour cet hypermarche.');
         RETURN;
     END IF;
 
@@ -513,4 +513,6 @@ Aucun responsable trouvé pour cet hypermarché.
 
 PL/SQL procedure successfully completed.
 */
+
+
 

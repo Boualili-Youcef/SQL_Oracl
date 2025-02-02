@@ -358,3 +358,91 @@ Viandes et volailles
 
 SQL>
 */
+
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 6:
+-- Trigger qui met à jour qteVendue dans promotions lorsqu'une vente est réalisée sur un produit
+-- **************************************************************************************************
+
+CREATE OR REPLACE TRIGGER trg_update_promo_qtevendue
+AFTER UPDATE OF QUANTITESTOCKHYPER ON PRODUITS
+FOR EACH ROW
+DECLARE
+    v_quantity_sold NUMBER;
+BEGIN
+    IF :new.QUANTITESTOCKHYPER < :old.QUANTITESTOCKHYPER THEN
+        v_quantity_sold := :old.QUANTITESTOCKHYPER - :new.QUANTITESTOCKHYPER;
+        UPDATE promotions
+        SET qteVendue = NVL(qteVendue, 0) + v_quantity_sold
+        WHERE numproduit = :old.NUMERO AND encours = 1;
+    END IF;
+END;
+/
+
+-- Insérer des rayons de test
+INSERT INTO RAYON (NUMERO, NOM, DESCRIPTIF, CHIFFREAFFAIRE, NUMEROHYPER, NUMERORESPONSABLE)
+VALUES ('RAY555', 'Viandes', 'Viandes et volailles', 0, 'HYP43', 'EMP4328');
+
+-- Insérer des produits de test
+INSERT INTO PRODUITS (NUMERO, LIBELLE, NUMERORAYON, PRIXUNITAIRE, UNITE, QUANTITESTOCKHYPER)
+VALUES ('PR2', 'Produit Test', 'RAY555', 12.50, 'kg', 345);
+
+-- Insérer des promotions de test
+INSERT INTO PROMOTIONS (NUMERO, NUMPRODUIT, POURCENTAGE_REMISE, DATE_DEBUT, DATE_FIN, ENCOURS, QTEVENDUE)
+VALUES ('PRO011', 'PR2', 10, TO_DATE('01-DEC-2024', 'DD-MON-YYYY'), TO_DATE('25-FEB-2025', 'DD-MON-YYYY'), 1, 0);
+
+-- Avant 
+SELECT * FROM PROMOTIONS WHERE NUMPRODUIT = 'PR2';
+
+-- Mettre à jour la quantité en stock d'un produit
+UPDATE PRODUITS
+SET QUANTITESTOCKHYPER = 335
+WHERE NUMERO = 'PR2';
+
+-- Vérifier les promotions mises à jour
+SELECT * FROM PROMOTIONS WHERE NUMPRODUIT = 'PR2';
+
+-- Supprimer les données de test
+DELETE FROM PROMOTIONS WHERE NUMPRODUIT = 'PR2';
+DELETE FROM PRODUITS WHERE NUMERO = 'PR2';
+DELETE FROM RAYON WHERE NUMERO = 'RAY555';
+
+
+-- Resultat attendu:
+/*
+Trigger created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+NUMERO NUMPRO POURCENTAGE_REMISE DATE_DEBU DATE_FIN     ENCOURS  QTEVENDUE
+------ ------ ------------------ --------- --------- ---------- ----------
+PRO011 PR2                    10 01-DEC-24 25-FEB-25          1          0
+
+
+1 row updated.
+
+
+NUMERO NUMPRO POURCENTAGE_REMISE DATE_DEBU DATE_FIN     ENCOURS  QTEVENDUE
+------ ------ ------------------ --------- --------- ---------- ----------
+PRO011 PR2                    10 01-DEC-24 25-FEB-25          1         10
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+SQL>
+*/

@@ -141,3 +141,64 @@ ADRESSE
 3          FRING                          GUSTAVO
 789 rue de l'est
 */
+
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 3:
+-- DEcrire un trigger qui permet de renseigner le champ « encours » d'une promotion lors de son insertion
+-- dans la table Promotions.
+-- **************************************************************************************************
+
+CREATE OR REPLACE TRIGGER trg_set_encours
+BEFORE INSERT ON promotions
+FOR EACH ROW
+BEGIN
+    IF SYSDATE BETWEEN :new.date_debut AND :new.date_fin THEN
+        :new.encours := 1;
+    ELSE
+        :new.encours := 0;
+    END IF;
+END;
+/
+
+-- Insérer des promotions de test
+INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
+VALUES ('PRO005', 'PR1234', 10, TO_DATE('01-DEC-2022', 'DD-MON-YYYY'), TO_DATE('15-DEC-2022', 'DD-MON-YYYY'), NULL, 0);
+
+INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
+VALUES ('PRO006', 'PR1234', 15, TO_DATE('01-JAN-2025', 'DD-MON-YYYY'), TO_DATE('15-JAN-2025', 'DD-MON-YYYY'), NULL, 0);
+
+INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
+VALUES ('PRO007', 'PR1234', 20, TO_DATE('01-FEB-2025', 'DD-MON-YYYY'), TO_DATE('25-FEB-2025', 'DD-MON-YYYY'), NULL, 0);
+
+-- Vérifier les promotions insérées
+SELECT * FROM Promotions;
+
+DELETE FROM Promotions WHERE numero IN ('PRO005', 'PRO006', 'PRO007');
+
+-- Resultat attendu:
+/*
+
+Trigger created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+NUMERO NUMPRO POURCENTAGE_REMISE DATE_DEBU DATE_FIN     ENCOURS  QTEVENDUE
+------ ------ ------------------ --------- --------- ---------- ----------
+PRO006 PR1234                 15 01-JAN-25 15-JAN-25          0          0
+PRO007 PR1234                 20 01-FEB-25 25-FEB-25          1          0
+PRO005 PR1234                 10 01-DEC-22 15-DEC-22          0          0
+
+
+3 rows deleted.
+
+SQL>
+*/

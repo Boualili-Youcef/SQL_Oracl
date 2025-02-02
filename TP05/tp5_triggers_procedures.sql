@@ -12,7 +12,7 @@
 
 
 -- Exercice 1: 
--- Ecrire une procédure qui permet de désactiver (mettre « encours » à 0) les promotions dont la date est
+-- Ecrire une procédure qui permet de désactiver (mettre « encours » à 0) les promotions dont la dates est
 -- dépassée.
 
 CREATE OR REPLACE PROCEDURE Desactiver_Promotions_Expirees IS
@@ -220,7 +220,7 @@ END;
 /
 
 -- Insérer des promotions de test
--- Cette insertion devrait échouer car la date de fin est passée
+-- Cette insertion devrait échouer car la dates de fin est passée
 BEGIN
     INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
     VALUES ('PRO008', 'PR1234', 10, TO_DATE('01-DEC-2022', 'DD-MON-YYYY'), TO_DATE('15-DEC-2022', 'DD-MON-YYYY'), 0, 0);
@@ -584,6 +584,127 @@ UNITE                QUANTITESTOCKHYPER
 -------------------- ------------------
 PRTEST3    Nouveau Produit                RAYTEST              20
 L                                   200
+
+
+
+2 rows deleted.
+
+
+1 row deleted.
+
+
+Commit complete.
+
+SQL>
+*/
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 8:
+-- On souhaite conserver des traces (logs) des ajouts ou modifications appportés sur certaines tables de
+-- la base de données
+-- **************************************************************************************************
+
+-- les objets LOGS et logs_seq ont été correctement supprimés
+DROP TABLE LOGS CASCADE CONSTRAINTS PURGE;
+DROP SEQUENCE logs_seq;
+-- a table LOGS
+CREATE TABLE LOGS (
+    numero    NUMBER PRIMARY KEY,
+    dates     DATE,
+    username  VARCHAR2(100),
+    message   VARCHAR2(500)
+);
+/
+CREATE SEQUENCE logs_seq 
+  START WITH 1 
+  INCREMENT BY 1 
+  NOCACHE;
+/
+
+CREATE OR REPLACE TRIGGER trg_log_promotions
+AFTER INSERT OR UPDATE ON Promotions
+FOR EACH ROW
+DECLARE
+    v_action VARCHAR2(50);
+BEGIN
+    IF INSERTING THEN
+        v_action := 'Ajout dans la table Promotions';
+    ELSIF UPDATING THEN
+        v_action := 'Modification dans la table Promotions';
+    END IF;
+    INSERT INTO LOGS (numero, dates, username, message)
+    VALUES (logs_seq.NEXTVAL, SYSDATE, USER, v_action);
+END;
+/
+
+-- Insertion d'une promotion
+INSERT INTO Promotions (numero, numproduit, pourcentage_remise, date_debut, date_fin, encours, qteVendue)
+VALUES ('PRO100', 'PR1234', 20, SYSDATE, SYSDATE + 7, 1, 0);
+
+-- Vérifier les logs
+SELECT * FROM LOGS;
+
+-- Modification de la promotion
+UPDATE Promotions
+SET pourcentage_remise = 25
+WHERE numero = 'PRO100';
+
+-- Vérifier les logs
+SELECT * FROM LOGS;
+
+-- Supprimer le test de promotion et les logs associés
+DELETE FROM LOGS 
+WHERE message IN ('Ajout dans la table Promotions', 'Modification dans la table Promotions');
+
+DELETE FROM Promotions
+WHERE numero = 'PRO100';
+
+COMMIT;
+
+-- Resultat attendu:
+/*
+
+Trigger created.
+
+
+1 row created.
+
+
+    NUMERO DATES
+---------- ---------
+USERNAME
+--------------------------------------------------------------------------------
+MESSAGE
+--------------------------------------------------------------------------------
+         1 02-FEB-25
+C##YOUCEF
+Ajout dans la table Promotions
+
+
+
+1 row updated.
+
+
+    NUMERO DATES
+---------- ---------
+USERNAME
+--------------------------------------------------------------------------------
+MESSAGE
+--------------------------------------------------------------------------------
+         1 02-FEB-25
+C##YOUCEF
+Ajout dans la table Promotions
+
+         2 02-FEB-25
+C##YOUCEF
+Modification dans la table Promotions
+
+    NUMERO DATES
+---------- ---------
+USERNAME
+--------------------------------------------------------------------------------
+MESSAGE
+--------------------------------------------------------------------------------
 
 
 

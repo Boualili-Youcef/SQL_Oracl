@@ -446,3 +446,154 @@ PRO011 PR2                    10 01-DEC-24 25-FEB-25          1         10
 
 SQL>
 */
+
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 7:
+-- Trigger qui vérifie qu'il n'existe pas déjà dans le même rayon un produit avec le même libellé.
+-- Si c'est le cas, on met à jour la quantité en stock de l'existant et on lève une exception.
+-- **************************************************************************************************
+-- Création du trigger
+CREATE OR REPLACE TRIGGER trg_check_product_before_insert
+BEFORE INSERT ON PRODUITS
+FOR EACH ROW
+DECLARE
+    v_existing_numero PRODUITS.NUMERO%TYPE;
+    PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+    BEGIN
+        SELECT NUMERO INTO v_existing_numero
+        FROM PRODUITS
+        WHERE LIBELLE = :new.LIBELLE
+          AND NUMERORAYON = :new.NUMERORAYON
+          AND ROWNUM = 1; -- Prendre le premier trouvé en cas de doublons
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            v_existing_numero := NULL;
+    END;
+
+    IF v_existing_numero IS NOT NULL THEN
+        UPDATE PRODUITS
+        SET QUANTITESTOCKHYPER = QUANTITESTOCKHYPER + :new.QUANTITESTOCKHYPER
+        WHERE NUMERO = v_existing_numero;
+
+        COMMIT;
+
+        RAISE_APPLICATION_ERROR(-20003, 'Un produit avec le meme libellee existe deja dans ce rayon. Stock mis a jour.');
+    END IF;
+END;
+/
+-- Créer un rayon de test
+INSERT INTO RAYON (NUMERO, NOM, DESCRIPTIF, CHIFFREAFFAIRE, NUMEROHYPER, NUMERORESPONSABLE)
+VALUES ('RAYTEST', 'Test', 'Rayon de test', 0, 'HYP43', 'EMP4328');
+
+-- Créer un produit de test
+INSERT INTO PRODUITS (NUMERO, LIBELLE, NUMERORAYON, PRIXUNITAIRE, UNITE, QUANTITESTOCKHYPER)
+VALUES ('PRTEST1', 'Produit Duplique', 'RAYTEST', 10, 'kg', 100);
+
+COMMIT;
+
+-- Tenter d'insérer un produit avec le même libellé dans le même rayon
+BEGIN
+    -- Produit avec le même libellé et même rayon
+    INSERT INTO PRODUITS (NUMERO, LIBELLE, NUMERORAYON, PRIXUNITAIRE, UNITE, QUANTITESTOCKHYPER)
+    VALUES ('PRTEST2', 'Produit Duplique', 'RAYTEST', 15, 'kg', 50);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
+        ROLLBACK;
+END;
+/
+
+-- Vérifier les données
+-- Le produit PRTEST2 ne doit pas exister
+SELECT * FROM PRODUITS WHERE NUMERO IN ('PRTEST1', 'PRTEST2');
+
+-- Le stock de PRTEST1 doit être 100 + 50 = 150
+SELECT NUMERO, LIBELLE, QUANTITESTOCKHYPER FROM PRODUITS WHERE NUMERO = 'PRTEST1';
+
+
+-- Insérer un nouveau produit (libellé unique)
+BEGIN
+    INSERT INTO PRODUITS (NUMERO, LIBELLE, NUMERORAYON, PRIXUNITAIRE, UNITE, QUANTITESTOCKHYPER)
+    VALUES ('PRTEST3', 'Nouveau Produit', 'RAYTEST', 20, 'L', 200);
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
+        ROLLBACK;
+END;
+/
+
+-- Vérifier l'insertion
+SELECT * FROM PRODUITS WHERE NUMERO = 'PRTEST3';
+
+-- Supprimer les données de test
+DELETE FROM PRODUITS WHERE NUMERO IN ('PRTEST1', 'PRTEST3');
+DELETE FROM RAYON WHERE NUMERO = 'RAYTEST';
+COMMIT;
+
+-- Resultat attendu:
+/*
+
+Trigger created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+Erreur : ORA-20003: Un produit avec le meme libellee existe deja dans ce rayon.
+Stock mis a jour.
+ORA-06512: at "C##YOUCEF.TRG_CHECK_PRODUCT_BEFORE_INSERT",
+line 23
+ORA-04088: error during execution of trigger
+'C##YOUCEF.TRG_CHECK_PRODUCT_BEFORE_INSERT'
+
+PL/SQL procedure successfully completed.
+
+
+NUMERO     LIBELLE                        NUMERORAYO PRIXUNITAIRE
+---------- ------------------------------ ---------- ------------
+UNITE                QUANTITESTOCKHYPER
+-------------------- ------------------
+PRTEST1    Produit Duplique               RAYTEST              10
+kg                                  150
+
+PRTEST2    Produit Duplique               RAY555               15
+kg                                   50
+
+
+
+NUMERO     LIBELLE                        QUANTITESTOCKHYPER
+---------- ------------------------------ ------------------
+PRTEST1    Produit Duplique                              150
+
+
+PL/SQL procedure successfully completed.
+
+
+NUMERO     LIBELLE                        NUMERORAYO PRIXUNITAIRE
+---------- ------------------------------ ---------- ------------
+UNITE                QUANTITESTOCKHYPER
+-------------------- ------------------
+PRTEST3    Nouveau Produit                RAYTEST              20
+L                                   200
+
+
+
+2 rows deleted.
+
+
+1 row deleted.
+
+
+Commit complete.
+
+SQL>
+*/

@@ -265,3 +265,96 @@ PRO009 PR1234                 15 01-JAN-25 25-FEB-25          1          0
 
 SQL>
 */
+
+
+-- __________________________________________________________________________________________________
+--**************************************************************************************************
+-- Exercice 5:
+-- Trigger qui met à jour le chiffre d'affaires du rayon lorsqu'une vente est réalisée (baisse du stock)
+-- **************************************************************************************************
+CREATE OR REPLACE TRIGGER trg_update_rayon_ca
+AFTER UPDATE OF QUANTITESTOCKHYPER ON PRODUITS
+FOR EACH ROW
+DECLARE
+    v_quantity_sold NUMBER;
+    v_sale_amount   NUMBER;
+BEGIN
+    IF :new.QUANTITESTOCKHYPER < :old.QUANTITESTOCKHYPER THEN
+        v_quantity_sold := :old.QUANTITESTOCKHYPER - :new.QUANTITESTOCKHYPER;
+        v_sale_amount := v_quantity_sold * :old.PRIXUNITAIRE;
+        
+        UPDATE RAYON
+        SET CHIFFREAFFAIRE = NVL(CHIFFREAFFAIRE, 0) + v_sale_amount
+        WHERE NUMERO = :old.NUMERORAYON;
+    END IF;
+END;
+/
+
+-- Insérer des rayons de test
+INSERT INTO RAYON (NUMERO, NOM, DESCRIPTIF, CHIFFREAFFAIRE, NUMEROHYPER, NUMERORESPONSABLE)
+VALUES ('RAY555', 'Viandes', 'Viandes et volailles', 0, 'HYP43', 'EMP4328');
+
+-- Insérer des produits de test
+INSERT INTO PRODUITS (NUMERO, LIBELLE, NUMERORAYON, PRIXUNITAIRE, UNITE, QUANTITESTOCKHYPER)
+VALUES ('PR1', 'Côtes de bœuf', 'RAY555', 12.50, 'kg', 345);
+
+SELECT * FROM RAYON WHERE NUMERO = 'RAY555';
+
+-- Mettre à jour la quantité en stock d'un produit
+UPDATE PRODUITS
+SET QUANTITESTOCKHYPER = 90
+WHERE NUMERO = 'PR1';
+
+-- Vérifier les rayons mis à jour
+SELECT * FROM RAYON WHERE NUMERO = 'RAY555';
+
+-- Supprimer les données de test
+DELETE FROM PRODUITS WHERE NUMERO = 'PR1';
+DELETE FROM RAYON WHERE NUMERO = 'RAY555';
+
+-- Resultat attendu:
+
+/*
+Trigger created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+NUMERO     NOM
+---------- ------------------------------
+DESCRIPTIF
+--------------------------------------------------------------------------------
+CHIFFREAFFAIRE NUMEROHYPE NUMERORESP
+-------------- ---------- ----------
+RAY555     Viandes
+Viandes et volailles
+             0 HYP43      EMP4328
+
+
+
+1 row updated.
+
+
+NUMERO     NOM
+---------- ------------------------------
+DESCRIPTIF
+--------------------------------------------------------------------------------
+CHIFFREAFFAIRE NUMEROHYPE NUMERORESP
+-------------- ---------- ----------
+RAY555     Viandes
+Viandes et volailles
+        3187.5 HYP43      EMP4328
+
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+SQL>
+*/

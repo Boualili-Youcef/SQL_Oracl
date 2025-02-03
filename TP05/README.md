@@ -1,8 +1,8 @@
-# TP04: Fonctions et Procedures
+# TP05: Fonctions et Procedures
 
 ## Organisation du Projet
 
-Le projet TP04 est structuré de la manière suivante :
+Le projet TP05 est structuré de la manière suivante :
 
 - `creatab.sql` : Script SQL pour créer les tables nécessaires à la base de données.
 - `instab.sql` : Script SQL pour insérer les données initiales dans les tables sans gestion des exceptions.
@@ -62,3 +62,16 @@ Contient plusieurs blocs PL/SQL couvrant les opérations sans gestion des except
 ### `fct_procedures.sql`
 
 Contient les fonctions et procédures stockées pour diverses opérations sur la base de données.
+
+## TP05 - Triggers et Procédures
+
+Le fichier `tp5_triggers_procedures.sql` contient l'ensemble des triggers et procédures utilisés dans ce TP, notamment :
+
+- La procédure `Desactiver_Promotions_Expirees` pour désactiver les promotions expirées.
+- Des triggers sur la gestion des employés (`trg_emp_upper`), la mise à jour de promotions (`trg_set_encours`, `trg_annule_promotion`).
+- Des triggers pour la gestion des mises à jour liées aux ventes (`trg_update_rayon_ca`, `trg_update_promo_qtevendue`).
+- Le trigger `trg_check_product_before_insert` vérifiant l'unicité de libellé dans un rayon.
+- Deux versions de trigger pour le logging des modifications dans les promotions :
+  - `trg_log_promotions` (version d'origine).
+  - `trg_log_promotions_v2` (avec vérification des horaires de travail).
+
